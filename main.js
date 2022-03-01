@@ -43,22 +43,33 @@ let loginHeaders = {
 function getTimetable() {
     timetableHeaders.Authorization = "Bearer " + edulinkToken;
     timetablePayload.params.learner_id = edulinkID;
-    console.log(timetableHeaders);
-    console.log(timetablePayload);
     axios.post(TIMETABLE_URL, timetablePayload, { headers: timetableHeaders }).then(res => {
-        console.log(JSON.stringify(res.data));
-        console.log(res.data);
+        let data = res.data.result;
+        let currentWeek = data.weeks.filter(week => week.is_current)[0];
+        let currentDay = currentWeek.days.filter(day => day.is_current)[0];
+        let lessons = currentDay.lessons;
+        let periods = currentDay.periods;
+        lessons.forEach(lesson => {
+            let period = periods.filter(p => p.id === lesson.period_id)[0];
+            console.log("Period: " + period.name);
+            console.log("Subject: " + lesson.teaching_group.subject);
+            console.log("Teacher: " + lesson.teachers);
+            console.log("Room: " + lesson.room.name);
+            console.log("");
+        })
     });
 }
 
 function login() {
     axios.post(LOGIN_URL, loginPayload, { headers: loginHeaders }).then(res => {
         let data = res.data.result;
-        edulinkToken = data.authtoken;
-        edulinkID = data.user.id;
-        console.log("Token: " + edulinkToken);
-        console.log("ID: " + edulinkID);
-        getTimetable();
+        if (data.success) {
+            edulinkToken = data.authtoken;
+            edulinkID = data.user.id;
+            getTimetable();
+        } else {
+            console.log("Failed to log in: " + data.error);
+        }
     });
 }
 
