@@ -1,0 +1,17 @@
+{
+  "name": "edulink-bot",
+  "version": "1.0.0",
+  "description": "A discord bot to notify you of your lessons on edulink",
+  "main": "main.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "edulink"
+  ],
+  "author": "ElementalMP4",
+  "license": "ISC",
+  "dependencies": {
+    "axios": "^0.26.0"
+  }
+}
