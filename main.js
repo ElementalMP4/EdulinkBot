@@ -10,6 +10,8 @@ const CURRENT_DATE = date.toISOString().split('T')[0];
 let edulinkToken = "";
 let edulinkID = "";
 
+let lessonMap = [];
+
 let timetablePayload = {
     "method": "EduLink.Timetable",
     "params": {
@@ -19,6 +21,7 @@ let timetablePayload = {
     "id": "1",
     "jsonrpc": "2.0"
 };
+
 let timetableHeaders = {
     "X-API-Method": "EduLink.Timetable",
     "Authorization": ""
@@ -40,6 +43,25 @@ let loginHeaders = {
     "X-API-Method": "EduLink.Login"
 }
 
+function sendMessage(message) {
+    //Implement this
+    //https://gist.github.com/dmdboi/743111ae5945a1fe1ea558039cbe25f7
+    console.log(message);
+}
+
+function waitForLessonsAndAlert() {
+    let lessonMessage = "";
+    lessonMap.forEach(x => {
+        let period = x.period;
+        let lesson = x.lesson;
+        lessonMessage += "**Period:** " + period.name +
+            "\n**Subject:** " + lesson.teaching_group.subject +
+            "\n**Teacher:** " + lesson.teachers +
+            "\n**Room:** " + lesson.room.name + "\n\n";
+    })
+    sendMessage("Good morning! Your lessons for today:\n\n" + lessonMessage);
+}
+
 function getTimetable() {
     timetableHeaders.Authorization = "Bearer " + edulinkToken;
     timetablePayload.params.learner_id = edulinkID;
@@ -51,11 +73,9 @@ function getTimetable() {
         let periods = currentDay.periods;
         lessons.forEach(lesson => {
             let period = periods.filter(p => p.id === lesson.period_id)[0];
-            console.log("Period: " + period.name +
-                "\nSubject: " + lesson.teaching_group.subject +
-                "\nTeacher: " + lesson.teachers +
-                "\nRoom: " + lesson.room.name + "\n");
-        })
+            lessonMap.push({ "lesson": lesson, "period": period });
+        });
+        waitForLessonsAndAlert();
     });
 }
 
@@ -68,8 +88,10 @@ function login() {
             getTimetable();
         } else {
             console.log("Failed to log in: " + data.error);
+            process.exit(1);
         }
     });
 }
+
 
 login();
