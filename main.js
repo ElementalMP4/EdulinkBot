@@ -4,6 +4,9 @@ const axios = require("axios");
 const TIMETABLE_URL = "https://www2.edulinkone.com/api/?method=EduLink.Timetable";
 const LOGIN_URL = "https://www2.edulinkone.com/api/?method=EduLink.Login";
 
+let date = new Date();
+const CURRENT_DATE = date.toISOString().split('T')[0];
+
 let edulinkToken = "";
 let edulinkID = "";
 
@@ -11,7 +14,7 @@ let timetablePayload = {
     "method": "EduLink.Timetable",
     "params": {
         "learner_id": "",
-        "date": "2022-03-01"
+        "date": CURRENT_DATE
     },
     "id": "1",
     "jsonrpc": "2.0"
