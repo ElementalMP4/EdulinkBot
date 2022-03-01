@@ -51,11 +51,10 @@ function getTimetable() {
         let periods = currentDay.periods;
         lessons.forEach(lesson => {
             let period = periods.filter(p => p.id === lesson.period_id)[0];
-            console.log("Period: " + period.name);
-            console.log("Subject: " + lesson.teaching_group.subject);
-            console.log("Teacher: " + lesson.teachers);
-            console.log("Room: " + lesson.room.name);
-            console.log("");
+            console.log("Period: " + period.name +
+                "\nSubject: " + lesson.teaching_group.subject +
+                "\nTeacher: " + lesson.teachers +
+                "\nRoom: " + lesson.room.name + "\n");
         })
     });
 }
